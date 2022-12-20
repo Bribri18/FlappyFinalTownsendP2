@@ -1,33 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BobScript : MonoBehaviour
 {
-    public float upforce;           //Upward force of the "flap"
-    private bool isdead = false;    //Has the player collided with a wall?
 
-    private Animator anim;           //Reference to the Annimator component 
-    private Rigidbody2D rb2d;        //Holds a reference to the Rigidbody component of the bird.
+    public float upforce = 200f;
 
-    // Start is called before the first frame update
+    private bool isDead = false;
+    private Rigidbody2D rb2d;
+    private Animator anim;
+
+    //Use this for initialization 
     void Start()
     {
-        //Get reference to the Animator component attached to this GameObject
-        anim = GetComponent<Rigidbody2D>();
-        //Get and store a reference to the Rigidbody2D attached to this GameObject
-        rb2d = GetComponent < Rigidbody2D();
+        rb2d = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
-    {  
-        //Don't allow control if the bird has died 
-        if (isdead == false)
+    {
+        if (isDead == false)
         {
-            //Look for input to trigger a "flap" 
-            if (Input. GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
+            {
+                rb2d.velocity = Vector2.zero;
+                rb2d.AddForce(new Vector2 (0, upforce));
+                anim.SetTrigger("Flap");
+            }
         }
-        
+    }
+    void onCollisionEnter2D()
+    {
+        isDead = true;
+        anim.SetTrigger("Die");
+        GameControl.instance.BirdDied();
     }
 }
